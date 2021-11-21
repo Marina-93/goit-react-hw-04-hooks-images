@@ -22,26 +22,6 @@ export default function App() {
     setValue(value)
   }
 
-  const modalData = (src, alt) => {
-    setModalSrc(src)
-    setModalAlt(alt)
-  }
-
-  const toggleModal = () => {
-    setShowModal((prev) => !prev)
-  }
-
-  const loadMore = () => {
-    setPage((prev) => prev + 1)
-    
-    fetch(`${BaseURL}?q=${value}&page=${page}&key=${keyURL}&image_type=photo&orientation=horizontal&per_page=12`)
-      .then(res => res.json())
-      .then((res) => {
-        setImages((prevState) => [...prevState, ...res.hits])
-        setStatus("resolved")
-      })
-  }
-  
   useEffect(() => {
     if (!value) {
       return;
@@ -67,23 +47,43 @@ export default function App() {
       }
     })
   })
+  
+  const loadMore = () => {
+    setPage((prev) => prev + 1)
+    
+    fetch(`${BaseURL}?q=${value}&page=${page}&key=${keyURL}&image_type=photo&orientation=horizontal&per_page=12`)
+      .then(res => res.json())
+      .then((res) => {
+        setImages((prevState) => [...prevState, ...res.hits])
+        setStatus('resolved')
+      })
+  }
+  
+  const toggleModal = () => {
+    setShowModal((prev) => !prev)
+  }
+
+  const modalData = (src, alt) => {
+    setModalSrc(src)
+    setModalAlt(alt)
+  }
 
   return (
-      <div className='App'>
-        <Searchbar onSubmit={handleFormSubmit} />
-        {status === 'idli' && <div>Введите назание</div>}
-        {status === 'pending' && <Loader className="spin" type="Bars" color="#00BFFF" height={200} width={200} />}
-        {status === 'resolved' && <ImageGallery
-          images={images}
-          showModal={toggleModal}
-          modalData={modalData}
-        />}
-        {images.length !== 0 && <Button onClick={loadMore}/>}
-        {showModal && <Modal
-          onClose={toggleModal}
-          src={modalSrc}
-          alt={modalAlt}
-        />}
-      </div>
-    )
+    <div className='App'>
+      <Searchbar onSubmit={handleFormSubmit} />
+      {status === 'idli' && <div>Введите назание</div>}
+      {status === 'pending' && <Loader className="spin" type="Bars" color="#00BFFF" height={200} width={200} />}
+      {status === 'resolved' && <ImageGallery
+        images={images}
+        showModal={toggleModal}
+        modalData={modalData}
+      />}
+      {images.length !== 0 && <Button onClick={loadMore} />}
+      {showModal && <Modal
+        onClose={toggleModal}
+        src={modalSrc}
+        alt={modalAlt}
+      />}
+    </div>
+  )
 }
