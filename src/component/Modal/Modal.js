@@ -10,9 +10,9 @@ export default function Modal({ onClose, src, alt }) {
     useEffect(() => {
         window.addEventListener('click', onCloseByClick)
         window.addEventListener('keydown', onCloseByKeydown)
-        return (
+        return () => {
             window.removeEventListener('keydown', onCloseByKeydown)
-        )
+        }
     },[])
 
     const onCloseByClick = (e) => {
